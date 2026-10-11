@@ -1,0 +1,62 @@
+name: CotizaFlow public smoke tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/**"
+      - "tests/e2e/**"
+      - ".github/workflows/cotizaflow-smoke.yml"
+      - "wrangler.jsonc"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-smoke:
+    name: Test public Cloudflare site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: tests/e2e
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install test dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Wait for the public deployment to become available
+        shell: bash
+        run: |
+          for i in {1..18}; do
+            if curl --fail --silent --show-error --output /dev/null https://cotizaflow.papelon.workers.dev/; then
+              echo "Cloudflare URL is reachable."
+              exit 0
+            fi
+            echo "Waiting for Cloudflare deployment ($i/18)..."
+            sleep 10
+          done
+          echo "Cloudflare URL could not be reached from GitHub Actions."
+          exit 1
+
+      - name: Run browser tests
+        run: npm test
+
+      - name: Upload Playwright diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cotizaflow-playwright-diagnostics
+          path: tests/e2e/test-results/
+          if-no-files-found: ignore
