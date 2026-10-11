@@ -8,14 +8,18 @@ Prototipo demostrativo para seguimiento de cotizaciones comerciales en pequeñas
 
 ## Ejecutar
 
-Abre `index.html` en un navegador moderno. No requiere instalación ni API keys.
+Abre `public/index.html` en un navegador moderno. No requiere instalación ni API keys.
 
-## Publicar la demo
+## Publicar con Cloudflare Workers
 
-1. Importa este repositorio en Vercel o Cloudflare Pages.
-2. Usa la raíz del repositorio como directorio raíz.
-3. No configures comando de build ni variables de entorno: es una web estática.
-4. Comprueba la URL en escritorio y móvil. Mantén únicamente datos ficticios.
+El repositorio está preparado para Workers Static Assets:
+
+- `wrangler.jsonc` define `public/` como directorio de archivos estáticos.
+- `package.json` incorpora Wrangler y scripts de despliegue.
+- Comando de despliegue: `npx wrangler deploy`.
+- No requiere comando de compilación para la página estática.
+
+En el asistente de Cloudflare, selecciona este repositorio, deja el comando de compilación vacío, conserva `npx wrangler deploy` como comando de implementación y desactiva las compilaciones de vista previa para el primer despliegue.
 
 ## Funciones del prototipo
 
