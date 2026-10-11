@@ -1,0 +1,13 @@
+{
+  "name": "cotizaflow",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Prototipo demostrativo de seguimiento de cotizaciones",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
